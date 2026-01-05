@@ -1,6 +1,8 @@
 # AI-Powered Inventory Management - Real-Time Prototype
 ## SAP ERP Integration for TDK Philippines
 
+shh: AIzaSyD_uNeywdf_ql1Z1T1kR2obgGRtkRdcegg
+
 Academic thesis prototype demonstrating **real-time AI monitoring** of inventory safety stock levels using Google Gemini, with SAP-style data and weather context.
 
 ## Key Features
