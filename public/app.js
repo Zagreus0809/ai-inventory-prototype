@@ -1,70 +1,29 @@
-// AI Inventory Management - Dashboard-Focused AI Analysis
+// AI Inventory Management - Dashboard (Vercel Compatible)
 class InventoryApp {
     constructor() {
         this.stockData = [];
         this.mrpData = [];
         this.weatherData = null;
-        this.socket = null;
         this.alerts = [];
         this.init();
     }
 
     async init() {
-        this.initWebSocket();
+        this.updateConnectionStatus('connected', 'Online');
         await this.loadAllData();
-        await this.loadAIDashboardAnalysis(); // Load comprehensive AI analysis
+        await this.loadAIDashboardAnalysis();
         this.setupEventListeners();
-    }
-
-    initWebSocket() {
-        this.socket = io();
         
-        this.socket.on('connect', () => {
-            this.updateConnectionStatus('connected', 'Live');
-            this.showNotification('Real-time monitoring active', 'success', 3000);
-        });
-
-        this.socket.on('disconnect', () => {
-            this.updateConnectionStatus('disconnected', 'Offline');
-        });
-
-        this.socket.on('stock-update', (data) => this.handleStockUpdate(data));
-        this.socket.on('ai-analysis', (data) => {
-            // Just show notification, don't auto-refresh dashboard (user can click refresh)
-            this.showNotification(`AI analyzed: ${data.materialNumber}`, 'info', 3000);
-        });
+        // Auto-refresh data every 5 minutes
+        setInterval(() => this.loadAllData(), 300000);
     }
 
     updateConnectionStatus(status, text) {
         const el = document.getElementById('connectionStatus');
-        el.className = `connection-status ${status}`;
-        el.querySelector('.status-text').textContent = text;
-    }
-
-    handleStockUpdate(data) {
-        if (data.summary) this.updateDashboardCards(data.summary);
-        if (data.weather) {
-            this.weatherData = data.weather;
-            this.renderWeatherWidget();
+        if (el) {
+            el.className = `connection-status ${status}`;
+            el.querySelector('.status-text').textContent = text;
         }
-        if (data.alerts?.length > 0) {
-            data.alerts.forEach(alert => this.processAlert(alert));
-        }
-        document.getElementById('lastUpdate').textContent = new Date(data.timestamp).toLocaleTimeString();
-        this.loadSAPStock();
-        this.loadMRPAnalysis();
-    }
-
-    processAlert(alert) {
-        this.alerts.unshift(alert);
-        if (this.alerts.length > 15) this.alerts.pop();
-        
-        const type = alert.severity === 'critical' ? 'danger' : 'warning';
-        this.showNotification(alert.message, type, 6000);
-        this.renderAlertsPanel();
-        
-        if (alert.severity === 'critical') this.playAlertSound();
-        document.getElementById('alertCount').textContent = this.alerts.length;
     }
 
     // ============================================
@@ -74,63 +33,63 @@ class InventoryApp {
         const container = document.getElementById('aiDashboardAnalysis');
         const statusBadge = document.getElementById('analysisStatus');
         
-        statusBadge.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        if (statusBadge) statusBadge.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
         
-        container.innerHTML = `
-            <div class="text-center py-5">
-                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
-                <h5>AI is analyzing your entire inventory...</h5>
-                <p class="text-muted mb-0">Evaluating ${this.stockData.length || 16} materials, demand patterns, and weather impact</p>
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <i class="fas fa-check text-success me-1"></i> Fetching stock levels<br>
-                        <i class="fas fa-check text-success me-1"></i> Analyzing supply & demand<br>
-                        <i class="fas fa-check text-success me-1"></i> Checking weather conditions<br>
-                        <i class="fas fa-spinner fa-spin me-1"></i> Generating AI recommendations...
-                    </small>
-                </div>
-            </div>
-        `;
-
-        try {
-            const response = await fetch('/api/ai/dashboard-analysis');
-            const result = await response.json();
-            
-            statusBadge.innerHTML = result.isMock ? 
-                '<i class="fas fa-circle text-warning me-1"></i>Demo Mode' :
-                '<i class="fas fa-circle text-success me-1"></i>AI Active';
-
+        if (container) {
             container.innerHTML = `
-                ${result.isMock ? `
-                    <div class="alert alert-info m-3 py-2 small">
-                        <i class="fas fa-info-circle me-1"></i>
-                        <strong>Demo Mode:</strong> Configure GEMINI_API_KEY in .env for real AI analysis
-                    </div>
-                ` : ''}
-                <div class="ai-analysis-content p-3">
-                    ${this.formatAnalysis(result.analysis)}
-                </div>
-                <div class="border-top p-2 bg-light small text-muted text-center">
-                    <i class="fas fa-clock me-1"></i>
-                    Last analyzed: ${new Date(result.timestamp).toLocaleString()}
-                    <button class="btn btn-sm btn-link p-0 ms-3" onclick="app.refreshAIAnalysis()">
-                        <i class="fas fa-sync-alt me-1"></i>Refresh
-                    </button>
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                    <h5>AI is analyzing your entire inventory...</h5>
+                    <p class="text-muted mb-0">Evaluating ${this.stockData.length || 16} materials, demand patterns, and weather impact</p>
                 </div>
             `;
+        }
+
+        try {
+            const response = await fetch('/api/ai-analysis');
+            const result = await response.json();
+            
+            if (statusBadge) {
+                statusBadge.innerHTML = result.isMock ? 
+                    '<i class="fas fa-circle text-warning me-1"></i>Demo Mode' :
+                    '<i class="fas fa-circle text-success me-1"></i>AI Active';
+            }
+
+            if (container) {
+                container.innerHTML = `
+                    ${result.isMock ? `
+                        <div class="alert alert-info m-3 py-2 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Demo Mode:</strong> ${result.reason || 'Configure GEMINI_API_KEY for real AI'}
+                        </div>
+                    ` : ''}
+                    <div class="ai-analysis-content p-3">
+                        ${this.formatAnalysis(result.analysis)}
+                    </div>
+                    <div class="border-top p-2 bg-light small text-muted text-center">
+                        <i class="fas fa-clock me-1"></i>
+                        Last analyzed: ${new Date(result.timestamp).toLocaleString()}
+                        <button class="btn btn-sm btn-link p-0 ms-3" onclick="app.refreshAIAnalysis()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                `;
+            }
 
         } catch (error) {
             console.error('AI Dashboard Analysis Error:', error);
-            statusBadge.innerHTML = '<i class="fas fa-circle text-danger me-1"></i>Error';
-            container.innerHTML = `
-                <div class="alert alert-danger m-3">
-                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Analysis Failed</h6>
-                    <p class="mb-0">${error.message}</p>
-                    <button class="btn btn-sm btn-outline-danger mt-2" onclick="app.refreshAIAnalysis()">
-                        <i class="fas fa-redo me-1"></i>Retry
-                    </button>
-                </div>
-            `;
+            if (statusBadge) statusBadge.innerHTML = '<i class="fas fa-circle text-danger me-1"></i>Error';
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-danger m-3">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Analysis Failed</h6>
+                        <p class="mb-0">${error.message}</p>
+                        <button class="btn btn-sm btn-outline-danger mt-2" onclick="app.refreshAIAnalysis()">
+                            <i class="fas fa-redo me-1"></i>Retry
+                        </button>
+                    </div>
+                `;
+            }
         }
     }
 
@@ -143,36 +102,27 @@ class InventoryApp {
         if (!text) return '<p class="text-muted">No analysis available</p>';
         
         return text
-            // Headers
             .replace(/## (.*)/g, '<h4 class="analysis-header mt-4 mb-3">$1</h4>')
             .replace(/### (.*)/g, '<h5 class="analysis-subheader mt-3 mb-2">$1</h5>')
-            // Bold
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Tables - convert markdown tables to HTML
             .replace(/\|(.+)\|/g, (match) => {
                 const cells = match.split('|').filter(c => c.trim());
-                if (cells.some(c => c.includes('---'))) return ''; // Skip separator rows
-                const isHeader = match.includes('Metric') || match.includes('Material') || match.includes('Priority') || match.includes('Category') || match.includes('Day');
+                if (cells.some(c => c.includes('---'))) return '';
+                const isHeader = match.includes('Metric') || match.includes('Material') || match.includes('Priority') || match.includes('Category') || match.includes('Day') || match.includes('Risk');
                 const tag = isHeader ? 'th' : 'td';
                 return `<tr>${cells.map(c => `<${tag} class="px-2 py-1">${c.trim()}</${tag}>`).join('')}</tr>`;
             })
-            // Wrap tables
             .replace(/(<tr>.*<\/tr>\n?)+/g, '<div class="table-responsive"><table class="table table-sm table-bordered mb-3">$&</table></div>')
-            // Emojis and icons
             .replace(/⚠️/g, '<span class="text-warning">⚠️</span>')
             .replace(/✅/g, '<span class="text-success">✅</span>')
             .replace(/🔴/g, '<span class="text-danger">🔴</span>')
             .replace(/🟡/g, '<span class="text-warning">🟡</span>')
             .replace(/🟢/g, '<span class="text-success">🟢</span>')
             .replace(/📊/g, '<i class="fas fa-chart-bar text-primary"></i>')
-            .replace(/📈/g, '<i class="fas fa-chart-line text-success"></i>')
-            .replace(/📉/g, '<i class="fas fa-chart-line text-danger"></i>')
             .replace(/📅/g, '<i class="fas fa-calendar text-info"></i>')
             .replace(/🚨/g, '<i class="fas fa-exclamation-triangle text-danger"></i>')
-            // Line breaks
             .replace(/\n\n/g, '</p><p>')
             .replace(/\n/g, '<br>')
-            // Horizontal rules
             .replace(/---/g, '<hr class="my-3">');
     }
 
@@ -187,6 +137,7 @@ class InventoryApp {
                 this.loadWeather(),
                 this.loadPurchaseOrders()
             ]);
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
         } catch (error) {
             console.error('Error loading data:', error);
         }
@@ -194,7 +145,7 @@ class InventoryApp {
 
     async loadSAPStock() {
         try {
-            const response = await fetch('/api/sap/stock');
+            const response = await fetch('/api/sap-stock');
             const result = await response.json();
             this.stockData = result.data || [];
             this.renderStockTable();
@@ -206,7 +157,7 @@ class InventoryApp {
 
     async loadMRPAnalysis() {
         try {
-            const response = await fetch('/api/sap/mrp-analysis');
+            const response = await fetch('/api/sap-mrp');
             const result = await response.json();
             this.mrpData = result.data || [];
             this.renderMRPTable(result);
@@ -217,7 +168,7 @@ class InventoryApp {
 
     async loadWeather() {
         try {
-            const response = await fetch('/api/weather/current/Manila');
+            const response = await fetch('/api/weather');
             this.weatherData = await response.json();
             this.renderWeatherWidget();
         } catch (error) {
@@ -227,9 +178,9 @@ class InventoryApp {
 
     async loadPurchaseOrders() {
         try {
-            const response = await fetch('/api/sap/purchase-orders');
+            const response = await fetch('/api/sap-orders?type=purchase');
             const result = await response.json();
-            document.getElementById('openPOs').textContent = result.data?.length || 0;
+            document.getElementById('openPOs').textContent = result.count || 0;
         } catch (error) {
             console.error('Error loading POs:', error);
         }
@@ -249,6 +200,8 @@ class InventoryApp {
     // ============================================
     renderStockTable() {
         const tbody = document.getElementById('inventoryTable');
+        if (!tbody) return;
+        
         const filters = {
             group: document.getElementById('filterMaterialGroup')?.value || '',
             warehouse: document.getElementById('filterWarehouse')?.value || '',
@@ -313,6 +266,8 @@ class InventoryApp {
 
     renderMRPTable(result) {
         const tbody = document.getElementById('mrpTable');
+        if (!tbody) return;
+        
         const data = result.data || [];
         
         const sorted = [...data].sort((a, b) => {
@@ -341,6 +296,8 @@ class InventoryApp {
 
     renderWeatherWidget() {
         const widget = document.getElementById('weatherWidget');
+        if (!widget) return;
+        
         if (!this.weatherData) {
             widget.innerHTML = `<div class="text-center py-3 text-white"><i class="fas fa-cloud fa-2x opacity-50"></i><div class="small mt-2">Weather unavailable</div></div>`;
             return;
@@ -373,6 +330,8 @@ class InventoryApp {
 
     renderAlertsPanel() {
         const container = document.getElementById('alertsPanel');
+        if (!container) return;
+        
         if (this.alerts.length === 0) {
             container.innerHTML = `<div class="text-center text-muted py-3"><i class="fas fa-check-circle text-success fa-2x mb-2"></i><div class="small">No alerts</div></div>`;
             return;
@@ -387,9 +346,9 @@ class InventoryApp {
     }
 
     // ============================================
-    // ITEM DETAIL (Individual Analysis)
+    // ITEM DETAIL
     // ============================================
-    async showItemDetail(materialNumber) {
+    showItemDetail(materialNumber) {
         const item = this.stockData.find(i => i.materialNumber === materialNumber);
         const mrpItem = this.mrpData.find(i => i.materialNumber === materialNumber);
         if (!item) return;
@@ -453,9 +412,6 @@ class InventoryApp {
                 </div>
             </div>
             ` : ''}
-            <div class="mt-3 text-center">
-                <small class="text-muted">For detailed AI analysis, see the main dashboard panel above</small>
-            </div>
         `;
         
         modal.show();
@@ -466,6 +422,8 @@ class InventoryApp {
     // ============================================
     showNotification(message, type = 'info', duration = 5000) {
         const container = document.getElementById('notificationContainer');
+        if (!container) return;
+        
         const id = `notif-${Date.now()}`;
         const icons = { success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
         
@@ -480,20 +438,6 @@ class InventoryApp {
         setTimeout(() => document.getElementById(id)?.remove(), duration);
     }
 
-    playAlertSound() {
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.value = 800;
-            gain.gain.value = 0.1;
-            osc.start();
-            setTimeout(() => osc.stop(), 150);
-        } catch (e) {}
-    }
-
     setupEventListeners() {
         ['filterMaterialGroup', 'filterWarehouse', 'filterStatus'].forEach(id => {
             document.getElementById(id)?.addEventListener('change', () => this.renderStockTable());
@@ -506,24 +450,9 @@ class InventoryApp {
         this.showNotification('Data refreshed', 'success', 2000);
     }
 
-    showHelp() { new bootstrap.Modal(document.getElementById('helpModal')).show(); }
-    showSimulation() { new bootstrap.Modal(document.getElementById('simulationModal')).show(); }
-
-    async startSimulation() {
-        await fetch('/api/sap/simulate/start', { method: 'POST' });
-        this.showNotification('Simulation started', 'warning');
-    }
-
-    async stopSimulation() {
-        await fetch('/api/sap/simulate/stop', { method: 'POST' });
-        this.showNotification('Simulation stopped', 'info');
-    }
-
-    async resetSimulation() {
-        await fetch('/api/sap/simulate/reset', { method: 'POST' });
-        this.showNotification('Stock levels reset', 'success');
-        this.loadAllData();
-        this.loadAIDashboardAnalysis();
+    showHelp() { 
+        const modal = document.getElementById('helpModal');
+        if (modal) new bootstrap.Modal(modal).show(); 
     }
 }
 
