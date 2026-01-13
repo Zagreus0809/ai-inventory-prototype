@@ -2,7 +2,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { tdkMaterials, purchaseOrders, salesOrders, calculateMRP, getStockStatus } = require('./data/sap-data');
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -116,7 +116,7 @@ Be specific and actionable. Format with markdown headers and tables.`;
       error: error.message
     });
   }
-};
+}
 
 function generateMockAnalysis(summary, mrpData, weather) {
   return `## 📊 AI INVENTORY DASHBOARD ANALYSIS

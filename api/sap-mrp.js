@@ -1,7 +1,7 @@
 // Vercel Serverless Function - MRP Analysis
-const { calculateMRP } = require('./data/sap-data');
+const calculateMRP = require('./data/sap-data').calculateMRP;
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -10,18 +10,22 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
   
-  const mrpData = calculateMRP();
-  
-  const summary = {
-    totalMaterials: mrpData.length,
-    criticalRisk: mrpData.filter(m => m.riskLevel === 'CRITICAL').length,
-    highRisk: mrpData.filter(m => m.riskLevel === 'HIGH').length,
-    mediumRisk: mrpData.filter(m => m.riskLevel === 'MEDIUM').length,
-    lowRisk: mrpData.filter(m => m.riskLevel === 'LOW').length,
-    weatherSensitiveCount: mrpData.filter(m => m.weatherSensitive).length
-  };
+  try {
+    const mrpData = calculateMRP();
+    
+    const summary = {
+      totalMaterials: mrpData.length,
+      criticalRisk: mrpData.filter(m => m.riskLevel === 'CRITICAL').length,
+      highRisk: mrpData.filter(m => m.riskLevel === 'HIGH').length,
+      mediumRisk: mrpData.filter(m => m.riskLevel === 'MEDIUM').length,
+      lowRisk: mrpData.filter(m => m.riskLevel === 'LOW').length,
+      weatherSensitiveCount: mrpData.filter(m => m.weatherSensitive).length
+    };
 
-  const criticalItems = mrpData.filter(m => m.riskLevel === 'CRITICAL' || m.riskLevel === 'HIGH');
+    const criticalItems = mrpData.filter(m => m.riskLevel === 'CRITICAL' || m.riskLevel === 'HIGH');
 
-  res.json({ data: mrpData, summary, criticalItems });
-};
+    return res.status(200).json({ data: mrpData, summary, criticalItems });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}

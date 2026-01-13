@@ -1,5 +1,5 @@
 // Vercel Serverless Function - Weather Data
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   }
   
   // Mock weather data for Philippines
-  res.json({
+  return res.status(200).json({
     city: 'Manila',
     temperature: 28,
     condition: 'Partly Cloudy',
@@ -18,4 +18,4 @@ module.exports = async (req, res) => {
     timestamp: new Date().toISOString(),
     isMock: true
   });
-};
+}
