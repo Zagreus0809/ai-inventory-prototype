@@ -310,9 +310,9 @@ router.get('/insights', async (req, res) => {
 function generateInsightRecommendations(sapAnalysis) {
   if (!sapAnalysis?.criticalItems?.length) {
     return [
-      { item: 'TDK-CAP-004', action: 'Review safety stock', reason: 'Tantalum capacitors showing low coverage', priority: 'High' },
-      { item: 'TDK-SEN-002', action: 'Expedite PO', reason: 'MEMS sensors below reorder point', priority: 'High' },
-      { item: 'TDK-FER-002', action: 'Monitor closely', reason: 'Ferrite cores approaching safety stock', priority: 'Medium' }
+      { item: 'MAT-CAP-004', action: 'Review safety stock', reason: 'Tantalum capacitors showing low coverage', priority: 'High' },
+      { item: 'MAT-SEN-002', action: 'Expedite PO', reason: 'MEMS sensors below reorder point', priority: 'High' },
+      { item: 'MAT-FER-002', action: 'Monitor closely', reason: 'Ferrite cores approaching safety stock', priority: 'Medium' }
     ];
   }
 
@@ -449,7 +449,7 @@ function buildDashboardAnalysisPrompt(stockData, mrpData, weather, purchaseOrder
     `| ${item.materialNumber} | ${item.description?.substring(0, 25)} | ${item.currentStock?.toLocaleString()} | ${item.safetyStock?.toLocaleString()} | ${item.projectedStock?.toLocaleString()} | ${item.riskLevel} |`
   ).join('\n');
 
-  return `You are the AI Inventory Management Advisor for TDK Philippines electronics manufacturing plant. 
+  return `You are the AI Inventory Management Advisor for Company A electronics manufacturing plant. 
 Provide a comprehensive EXECUTIVE DASHBOARD ANALYSIS of the entire inventory situation.
 
 ## INVENTORY OVERVIEW
@@ -535,7 +535,7 @@ function generateMockDashboardAnalysis(stockData, mrpData, weather, purchaseOrde
   
   return `## 📊 AI INVENTORY DASHBOARD ANALYSIS
 **Analysis Date:** ${new Date().toLocaleString()}
-**Plant:** TDK Philippines - Plant 1000
+**Plant:** Company A - Plant 1000
 
 ---
 
@@ -560,10 +560,10 @@ function generateMockDashboardAnalysis(stockData, mrpData, weather, purchaseOrde
 
 | Priority | Action | Material | Urgency | Impact |
 |----------|--------|----------|---------|--------|
-| **1** | Create emergency PO | TDK-CAP-004 | 🔴 TODAY | Tantalum capacitors below safety stock |
-| **2** | Expedite delivery | TDK-SEN-002 | 🔴 TODAY | MEMS sensors critical for customer orders |
-| **3** | Review allocation | TDK-IND-003 | 🟡 This Week | Common mode chokes at reorder point |
-| **4** | Increase safety stock | TDK-FER-002 | 🟡 This Week | Ferrite cores showing high demand |
+| **1** | Create emergency PO | MAT-CAP-004 | 🔴 TODAY | Tantalum capacitors below safety stock |
+| **2** | Expedite delivery | MAT-SEN-002 | 🔴 TODAY | MEMS sensors critical for customer orders |
+| **3** | Review allocation | MAT-IND-003 | 🟡 This Week | Common mode chokes at reorder point |
+| **4** | Increase safety stock | MAT-FER-002 | 🟡 This Week | Ferrite cores showing high demand |
 | **5** | Monitor humidity | Weather-sensitive | 🟢 Ongoing | ${humidity}% humidity - check storage conditions |
 
 ---
@@ -572,10 +572,10 @@ function generateMockDashboardAnalysis(stockData, mrpData, weather, purchaseOrde
 
 | Material | Current Safety | Recommended | Change | Reason |
 |----------|---------------|-------------|--------|--------|
-| TDK-CAP-004 | 5,000 | 6,250 | +25% | High demand, long lead time |
-| TDK-SEN-002 | 2,000 | 2,400 | +20% | Critical for automotive customers |
-| TDK-IND-003 | 8,000 | 9,200 | +15% | Increasing demand trend |
-| TDK-FER-002 | 3,000 | 3,300 | +10% | Supply chain volatility |
+| MAT-CAP-004 | 5,000 | 6,250 | +25% | High demand, long lead time |
+| MAT-SEN-002 | 2,000 | 2,400 | +20% | Critical for automotive customers |
+| MAT-IND-003 | 8,000 | 9,200 | +15% | Increasing demand trend |
+| MAT-FER-002 | 3,000 | 3,300 | +10% | Supply chain volatility |
 
 **Total Investment Required:** ~15,000 additional units across critical items
 
@@ -624,7 +624,7 @@ ${humidity > 70 ? `
 
 | Day | Focus Area | Actions |
 |-----|------------|---------|
-| **Mon** | Critical Items | Process emergency POs for TDK-CAP-004, TDK-SEN-002 |
+| **Mon** | Critical Items | Process emergency POs for MAT-CAP-004, MAT-SEN-002 |
 | **Tue** | Supplier Contact | Follow up on pending deliveries, negotiate expedited shipping |
 | **Wed** | Safety Stock | Update SAP MM parameters for recommended safety stock levels |
 | **Thu** | Weather Check | Inspect climate control systems, verify humidity levels |
@@ -654,3 +654,4 @@ ${humidity > 70 ? `
 }
 
 module.exports = router;
+

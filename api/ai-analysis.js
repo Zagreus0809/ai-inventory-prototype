@@ -1,6 +1,6 @@
 // Vercel Serverless Function - AI Dashboard Analysis
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { tdkMaterials, purchaseOrders, salesOrders, calculateMRP, getStockStatus } = require('./data/sap-data');
+const { companyMaterials, purchaseOrders, salesOrders, calculateMRP, getStockStatus } = require('./data/sap-data');
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       `| ${item.materialNumber} | ${item.description?.substring(0, 25)} | ${item.currentStock?.toLocaleString()} | ${item.safetyStock?.toLocaleString()} | ${item.projectedStock?.toLocaleString()} | ${item.riskLevel} |`
     ).join('\n');
 
-    const prompt = `You are the AI Inventory Management Advisor for TDK Philippines electronics manufacturing plant.
+    const prompt = `You are the AI Inventory Management Advisor for Company A electronics manufacturing plant.
 Provide a comprehensive EXECUTIVE DASHBOARD ANALYSIS.
 
 ## INVENTORY OVERVIEW
@@ -121,7 +121,7 @@ Be specific and actionable. Format with markdown headers and tables.`;
 function generateMockAnalysis(summary, mrpData, weather) {
   return `## 📊 AI INVENTORY DASHBOARD ANALYSIS
 **Analysis Date:** ${new Date().toLocaleString()}
-**Plant:** TDK Philippines - Plant 1000
+**Plant:** Company A - Plant 1000
 
 ---
 
@@ -146,10 +146,10 @@ function generateMockAnalysis(summary, mrpData, weather) {
 
 | Priority | Action | Material | Urgency |
 |----------|--------|----------|---------|
-| **1** | Create emergency PO | TDK-CAP-004 | 🔴 TODAY |
-| **2** | Expedite delivery | TDK-SEN-002 | 🔴 TODAY |
-| **3** | Review allocation | TDK-IND-003 | 🟡 This Week |
-| **4** | Increase safety stock | TDK-FER-002 | 🟡 This Week |
+| **1** | Create emergency PO | MAT-CAP-004 | 🔴 TODAY |
+| **2** | Expedite delivery | MAT-SEN-002 | 🔴 TODAY |
+| **3** | Review allocation | MAT-IND-003 | 🟡 This Week |
+| **4** | Increase safety stock | MAT-FER-002 | 🟡 This Week |
 | **5** | Monitor humidity | Weather-sensitive | 🟢 Ongoing |
 
 ---
@@ -158,9 +158,9 @@ function generateMockAnalysis(summary, mrpData, weather) {
 
 | Material | Current | Recommended | Change |
 |----------|---------|-------------|--------|
-| TDK-CAP-004 | 5,000 | 6,250 | +25% |
-| TDK-SEN-002 | 2,000 | 2,400 | +20% |
-| TDK-IND-003 | 8,000 | 9,200 | +15% |
+| MAT-CAP-004 | 5,000 | 6,250 | +25% |
+| MAT-SEN-002 | 2,000 | 2,400 | +20% |
+| MAT-IND-003 | 8,000 | 9,200 | +15% |
 
 ---
 
@@ -177,3 +177,4 @@ function generateMockAnalysis(summary, mrpData, weather) {
 ---
 *Demo Mode - Configure GEMINI_API_KEY for real AI analysis*`;
 }
+

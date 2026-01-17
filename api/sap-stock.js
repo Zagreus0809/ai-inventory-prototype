@@ -1,5 +1,5 @@
 // Vercel Serverless Function - SAP Stock Data
-const tdkMaterials = require('./data/sap-data').tdkMaterials;
+const companyMaterials = require('./data/sap-data').companyMaterials;
 const getStockStatus = require('./data/sap-data').getStockStatus;
 
 export default async function handler(req, res) {
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
   
   try {
-    const stockData = tdkMaterials.map(m => ({
+    const stockData = companyMaterials.map(m => ({
       materialNumber: m.materialNumber,
       materialDescription: m.description,
       materialGroup: m.materialGroup,
@@ -38,3 +38,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
+

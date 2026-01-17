@@ -1,5 +1,5 @@
 # AI-Powered Inventory Management - Real-Time Prototype
-## SAP ERP Integration for TDK Philippines
+## SAP ERP Integration for Company A
 
 Academic thesis prototype demonstrating **real-time AI monitoring** of inventory safety stock levels using Google Gemini, with SAP-style data and weather context.
 
@@ -12,7 +12,7 @@ Academic thesis prototype demonstrating **real-time AI monitoring** of inventory
 - **Weather Impact Alerts**: Monitors humidity/temperature for sensitive components
 
 ### SAP ERP Mock System
-- 16 TDK electronics components (capacitors, inductors, sensors)
+- 16 electronics components (capacitors, inductors, sensors)
 - SAP-style transactions: MB52, MD04, ME2M, VA05
 - Purchase orders, sales orders, goods movements
 - MRP analysis with projected stock calculations
@@ -118,4 +118,4 @@ PORT=3000
 
 ---
 *Real-Time AI Inventory Monitoring - Academic Thesis Prototype*
-*TDK Philippines - Safety Stock Analysis with Google Gemini*
+*Company A - Safety Stock Analysis with Google Gemini*

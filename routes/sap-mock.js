@@ -7,99 +7,99 @@ const router = express.Router();
 // SAP-style Material Master Data (MARA table structure)
 const materialMaster = [
   // Capacitors
-  { materialNumber: 'TDK-CAP-001', description: 'Multilayer Ceramic Capacitor 100nF', materialGroup: 'MLCC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
-  { materialNumber: 'TDK-CAP-002', description: 'Aluminum Electrolytic Capacitor 470uF', materialGroup: 'ALEC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
-  { materialNumber: 'TDK-CAP-003', description: 'Film Capacitor 1uF 250V', materialGroup: 'FILM', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
-  { materialNumber: 'TDK-CAP-004', description: 'Tantalum Capacitor 10uF 16V', materialGroup: 'TANT', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
+  { materialNumber: 'MAT-CAP-001', description: 'Multilayer Ceramic Capacitor 100nF', materialGroup: 'MLCC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
+  { materialNumber: 'MAT-CAP-002', description: 'Aluminum Electrolytic Capacitor 470uF', materialGroup: 'ALEC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
+  { materialNumber: 'MAT-CAP-003', description: 'Film Capacitor 1uF 250V', materialGroup: 'FILM', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
+  { materialNumber: 'MAT-CAP-004', description: 'Tantalum Capacitor 10uF 16V', materialGroup: 'TANT', baseUnit: 'PC', plant: '1000', storageLocation: 'WH01', materialType: 'ROH' },
   
   // Inductors
-  { materialNumber: 'TDK-IND-001', description: 'Power Inductor 10uH 3A', materialGroup: 'PIND', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
-  { materialNumber: 'TDK-IND-002', description: 'SMD Inductor 4.7uH', materialGroup: 'SMDI', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
-  { materialNumber: 'TDK-IND-003', description: 'Common Mode Choke 100uH', materialGroup: 'CHOK', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
+  { materialNumber: 'MAT-IND-001', description: 'Power Inductor 10uH 3A', materialGroup: 'PIND', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
+  { materialNumber: 'MAT-IND-002', description: 'SMD Inductor 4.7uH', materialGroup: 'SMDI', baseUnit: 'PC', plant: '1000', storageLocation: 'WH02', materialType: 'ROH' },
+  { materialNumber: 'MAT-IND-003', description: 'Common Mode Choke 100uH', materialGroup: 'CHOK', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
   
   // Ferrites
-  { materialNumber: 'TDK-FER-001', description: 'Ferrite Bead 600ohm 100MHz', materialGroup: 'FERB', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
-  { materialNumber: 'TDK-FER-002', description: 'Ferrite Core E25', materialGroup: 'FERC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
+  { materialNumber: 'MAT-FER-001', description: 'Ferrite Bead 600ohm 100MHz', materialGroup: 'FERB', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
+  { materialNumber: 'MAT-FER-002', description: 'Ferrite Core E25', materialGroup: 'FERC', baseUnit: 'PC', plant: '1000', storageLocation: 'WH03', materialType: 'ROH' },
   
   // Sensors
-  { materialNumber: 'TDK-SEN-001', description: 'Temperature Sensor NTC 10K', materialGroup: 'TEMP', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
-  { materialNumber: 'TDK-SEN-002', description: 'Pressure Sensor MEMS', materialGroup: 'PRES', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
-  { materialNumber: 'TDK-SEN-003', description: 'Hall Effect Sensor', materialGroup: 'HALL', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
+  { materialNumber: 'MAT-SEN-001', description: 'Temperature Sensor NTC 10K', materialGroup: 'TEMP', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
+  { materialNumber: 'MAT-SEN-002', description: 'Pressure Sensor MEMS', materialGroup: 'PRES', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
+  { materialNumber: 'MAT-SEN-003', description: 'Hall Effect Sensor', materialGroup: 'HALL', baseUnit: 'PC', plant: '1000', storageLocation: 'WH04', materialType: 'ROH' },
   
   // Transformers
-  { materialNumber: 'TDK-TRF-001', description: 'Pulse Transformer 1:1', materialGroup: 'PULS', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
-  { materialNumber: 'TDK-TRF-002', description: 'Power Transformer 12V 2A', materialGroup: 'POWR', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
+  { materialNumber: 'MAT-TRF-001', description: 'Pulse Transformer 1:1', materialGroup: 'PULS', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
+  { materialNumber: 'MAT-TRF-002', description: 'Power Transformer 12V 2A', materialGroup: 'POWR', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
   
   // Filters
-  { materialNumber: 'TDK-FLT-001', description: 'EMI Filter 10A 250V', materialGroup: 'EMIF', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
-  { materialNumber: 'TDK-FLT-002', description: 'LC Filter Module', materialGroup: 'LCFM', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
+  { materialNumber: 'MAT-FLT-001', description: 'EMI Filter 10A 250V', materialGroup: 'EMIF', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
+  { materialNumber: 'MAT-FLT-002', description: 'LC Filter Module', materialGroup: 'LCFM', baseUnit: 'PC', plant: '1000', storageLocation: 'WH05', materialType: 'ROH' },
 ];
 
 // SAP-style Stock Overview (MARD table - Stock per Storage Location)
 let stockData = [
   // Capacitors - High volume items
-  { materialNumber: 'TDK-CAP-001', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 125000, qualityInspection: 5000, blocked: 0, inTransit: 15000, safetyStock: 50000, reorderPoint: 75000, maxStock: 200000 },
-  { materialNumber: 'TDK-CAP-002', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 45000, qualityInspection: 2000, blocked: 500, inTransit: 8000, safetyStock: 20000, reorderPoint: 35000, maxStock: 80000 },
-  { materialNumber: 'TDK-CAP-003', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 18000, qualityInspection: 1000, blocked: 0, inTransit: 5000, safetyStock: 10000, reorderPoint: 15000, maxStock: 40000 },
-  { materialNumber: 'TDK-CAP-004', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 8500, qualityInspection: 500, blocked: 200, inTransit: 3000, safetyStock: 5000, reorderPoint: 8000, maxStock: 25000 },
+  { materialNumber: 'MAT-CAP-001', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 125000, qualityInspection: 5000, blocked: 0, inTransit: 15000, safetyStock: 50000, reorderPoint: 75000, maxStock: 200000 },
+  { materialNumber: 'MAT-CAP-002', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 45000, qualityInspection: 2000, blocked: 500, inTransit: 8000, safetyStock: 20000, reorderPoint: 35000, maxStock: 80000 },
+  { materialNumber: 'MAT-CAP-003', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 18000, qualityInspection: 1000, blocked: 0, inTransit: 5000, safetyStock: 10000, reorderPoint: 15000, maxStock: 40000 },
+  { materialNumber: 'MAT-CAP-004', plant: '1000', storageLocation: 'WH01', unrestrictedStock: 8500, qualityInspection: 500, blocked: 200, inTransit: 3000, safetyStock: 5000, reorderPoint: 8000, maxStock: 25000 },
   
   // Inductors
-  { materialNumber: 'TDK-IND-001', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 32000, qualityInspection: 1500, blocked: 0, inTransit: 6000, safetyStock: 15000, reorderPoint: 25000, maxStock: 60000 },
-  { materialNumber: 'TDK-IND-002', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 55000, qualityInspection: 2500, blocked: 0, inTransit: 10000, safetyStock: 25000, reorderPoint: 40000, maxStock: 100000 },
-  { materialNumber: 'TDK-IND-003', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 12000, qualityInspection: 800, blocked: 100, inTransit: 2500, safetyStock: 8000, reorderPoint: 12000, maxStock: 30000 },
+  { materialNumber: 'MAT-IND-001', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 32000, qualityInspection: 1500, blocked: 0, inTransit: 6000, safetyStock: 15000, reorderPoint: 25000, maxStock: 60000 },
+  { materialNumber: 'MAT-IND-002', plant: '1000', storageLocation: 'WH02', unrestrictedStock: 55000, qualityInspection: 2500, blocked: 0, inTransit: 10000, safetyStock: 25000, reorderPoint: 40000, maxStock: 100000 },
+  { materialNumber: 'MAT-IND-003', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 12000, qualityInspection: 800, blocked: 100, inTransit: 2500, safetyStock: 8000, reorderPoint: 12000, maxStock: 30000 },
   
   // Ferrites
-  { materialNumber: 'TDK-FER-001', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 78000, qualityInspection: 3000, blocked: 0, inTransit: 12000, safetyStock: 35000, reorderPoint: 55000, maxStock: 120000 },
-  { materialNumber: 'TDK-FER-002', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 4500, qualityInspection: 500, blocked: 0, inTransit: 2000, safetyStock: 3000, reorderPoint: 5000, maxStock: 15000 },
+  { materialNumber: 'MAT-FER-001', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 78000, qualityInspection: 3000, blocked: 0, inTransit: 12000, safetyStock: 35000, reorderPoint: 55000, maxStock: 120000 },
+  { materialNumber: 'MAT-FER-002', plant: '1000', storageLocation: 'WH03', unrestrictedStock: 4500, qualityInspection: 500, blocked: 0, inTransit: 2000, safetyStock: 3000, reorderPoint: 5000, maxStock: 15000 },
   
   // Sensors - Lower volume, higher value
-  { materialNumber: 'TDK-SEN-001', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 15000, qualityInspection: 1000, blocked: 0, inTransit: 3000, safetyStock: 8000, reorderPoint: 12000, maxStock: 30000 },
-  { materialNumber: 'TDK-SEN-002', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 2800, qualityInspection: 200, blocked: 50, inTransit: 800, safetyStock: 2000, reorderPoint: 3500, maxStock: 8000 },
-  { materialNumber: 'TDK-SEN-003', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 6500, qualityInspection: 400, blocked: 0, inTransit: 1500, safetyStock: 4000, reorderPoint: 6000, maxStock: 15000 },
+  { materialNumber: 'MAT-SEN-001', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 15000, qualityInspection: 1000, blocked: 0, inTransit: 3000, safetyStock: 8000, reorderPoint: 12000, maxStock: 30000 },
+  { materialNumber: 'MAT-SEN-002', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 2800, qualityInspection: 200, blocked: 50, inTransit: 800, safetyStock: 2000, reorderPoint: 3500, maxStock: 8000 },
+  { materialNumber: 'MAT-SEN-003', plant: '1000', storageLocation: 'WH04', unrestrictedStock: 6500, qualityInspection: 400, blocked: 0, inTransit: 1500, safetyStock: 4000, reorderPoint: 6000, maxStock: 15000 },
   
   // Transformers
-  { materialNumber: 'TDK-TRF-001', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 3200, qualityInspection: 300, blocked: 0, inTransit: 800, safetyStock: 2000, reorderPoint: 3000, maxStock: 8000 },
-  { materialNumber: 'TDK-TRF-002', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 1800, qualityInspection: 150, blocked: 0, inTransit: 500, safetyStock: 1200, reorderPoint: 2000, maxStock: 5000 },
+  { materialNumber: 'MAT-TRF-001', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 3200, qualityInspection: 300, blocked: 0, inTransit: 800, safetyStock: 2000, reorderPoint: 3000, maxStock: 8000 },
+  { materialNumber: 'MAT-TRF-002', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 1800, qualityInspection: 150, blocked: 0, inTransit: 500, safetyStock: 1200, reorderPoint: 2000, maxStock: 5000 },
   
   // Filters
-  { materialNumber: 'TDK-FLT-001', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 4500, qualityInspection: 250, blocked: 0, inTransit: 1000, safetyStock: 2500, reorderPoint: 4000, maxStock: 10000 },
-  { materialNumber: 'TDK-FLT-002', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 2200, qualityInspection: 100, blocked: 0, inTransit: 600, safetyStock: 1500, reorderPoint: 2500, maxStock: 6000 },
+  { materialNumber: 'MAT-FLT-001', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 4500, qualityInspection: 250, blocked: 0, inTransit: 1000, safetyStock: 2500, reorderPoint: 4000, maxStock: 10000 },
+  { materialNumber: 'MAT-FLT-002', plant: '1000', storageLocation: 'WH05', unrestrictedStock: 2200, qualityInspection: 100, blocked: 0, inTransit: 600, safetyStock: 1500, reorderPoint: 2500, maxStock: 6000 },
 ];
 
 
 // SAP-style Purchase Orders (EKKO/EKPO tables)
 const purchaseOrders = [
-  { poNumber: '4500001234', vendor: 'V-10001', vendorName: 'Murata Manufacturing', materialNumber: 'TDK-CAP-001', quantity: 50000, unit: 'PC', deliveryDate: '2025-01-15', status: 'OPEN', plant: '1000' },
-  { poNumber: '4500001235', vendor: 'V-10002', vendorName: 'Nichicon Corp', materialNumber: 'TDK-CAP-002', quantity: 20000, unit: 'PC', deliveryDate: '2025-01-10', status: 'PARTIALLY_DELIVERED', plant: '1000' },
-  { poNumber: '4500001236', vendor: 'V-10003', vendorName: 'Vishay Intertechnology', materialNumber: 'TDK-IND-001', quantity: 15000, unit: 'PC', deliveryDate: '2025-01-20', status: 'OPEN', plant: '1000' },
-  { poNumber: '4500001237', vendor: 'V-10004', vendorName: 'Bourns Inc', materialNumber: 'TDK-SEN-001', quantity: 8000, unit: 'PC', deliveryDate: '2025-01-08', status: 'OPEN', plant: '1000' },
-  { poNumber: '4500001238', vendor: 'V-10005', vendorName: 'Würth Elektronik', materialNumber: 'TDK-FER-001', quantity: 30000, unit: 'PC', deliveryDate: '2025-01-25', status: 'OPEN', plant: '1000' },
+  { poNumber: '4500001234', vendor: 'V-10001', vendorName: 'Murata Manufacturing', materialNumber: 'MAT-CAP-001', quantity: 50000, unit: 'PC', deliveryDate: '2025-01-15', status: 'OPEN', plant: '1000' },
+  { poNumber: '4500001235', vendor: 'V-10002', vendorName: 'Nichicon Corp', materialNumber: 'MAT-CAP-002', quantity: 20000, unit: 'PC', deliveryDate: '2025-01-10', status: 'PARTIALLY_DELIVERED', plant: '1000' },
+  { poNumber: '4500001236', vendor: 'V-10003', vendorName: 'Vishay Intertechnology', materialNumber: 'MAT-IND-001', quantity: 15000, unit: 'PC', deliveryDate: '2025-01-20', status: 'OPEN', plant: '1000' },
+  { poNumber: '4500001237', vendor: 'V-10004', vendorName: 'Bourns Inc', materialNumber: 'MAT-SEN-001', quantity: 8000, unit: 'PC', deliveryDate: '2025-01-08', status: 'OPEN', plant: '1000' },
+  { poNumber: '4500001238', vendor: 'V-10005', vendorName: 'Würth Elektronik', materialNumber: 'MAT-FER-001', quantity: 30000, unit: 'PC', deliveryDate: '2025-01-25', status: 'OPEN', plant: '1000' },
 ];
 
 // SAP-style Sales Orders / Demand (VBAK/VBAP tables)
 const salesOrders = [
-  { soNumber: '0010001001', customer: 'C-20001', customerName: 'Samsung Electronics', materialNumber: 'TDK-CAP-001', quantity: 80000, unit: 'PC', requestedDate: '2025-01-12', status: 'OPEN' },
-  { soNumber: '0010001002', customer: 'C-20002', customerName: 'Apple Inc', materialNumber: 'TDK-CAP-001', quantity: 45000, unit: 'PC', requestedDate: '2025-01-18', status: 'OPEN' },
-  { soNumber: '0010001003', customer: 'C-20003', customerName: 'Bosch Automotive', materialNumber: 'TDK-SEN-002', quantity: 5000, unit: 'PC', requestedDate: '2025-01-15', status: 'OPEN' },
-  { soNumber: '0010001004', customer: 'C-20004', customerName: 'Continental AG', materialNumber: 'TDK-IND-001', quantity: 25000, unit: 'PC', requestedDate: '2025-01-20', status: 'OPEN' },
-  { soNumber: '0010001005', customer: 'C-20001', customerName: 'Samsung Electronics', materialNumber: 'TDK-FER-001', quantity: 40000, unit: 'PC', requestedDate: '2025-01-22', status: 'OPEN' },
-  { soNumber: '0010001006', customer: 'C-20005', customerName: 'Siemens AG', materialNumber: 'TDK-TRF-002', quantity: 2000, unit: 'PC', requestedDate: '2025-01-10', status: 'URGENT' },
-  { soNumber: '0010001007', customer: 'C-20006', customerName: 'LG Electronics', materialNumber: 'TDK-CAP-002', quantity: 30000, unit: 'PC', requestedDate: '2025-01-14', status: 'OPEN' },
+  { soNumber: '0010001001', customer: 'C-20001', customerName: 'Samsung Electronics', materialNumber: 'MAT-CAP-001', quantity: 80000, unit: 'PC', requestedDate: '2025-01-12', status: 'OPEN' },
+  { soNumber: '0010001002', customer: 'C-20002', customerName: 'Apple Inc', materialNumber: 'MAT-CAP-001', quantity: 45000, unit: 'PC', requestedDate: '2025-01-18', status: 'OPEN' },
+  { soNumber: '0010001003', customer: 'C-20003', customerName: 'Bosch Automotive', materialNumber: 'MAT-SEN-002', quantity: 5000, unit: 'PC', requestedDate: '2025-01-15', status: 'OPEN' },
+  { soNumber: '0010001004', customer: 'C-20004', customerName: 'Continental AG', materialNumber: 'MAT-IND-001', quantity: 25000, unit: 'PC', requestedDate: '2025-01-20', status: 'OPEN' },
+  { soNumber: '0010001005', customer: 'C-20001', customerName: 'Samsung Electronics', materialNumber: 'MAT-FER-001', quantity: 40000, unit: 'PC', requestedDate: '2025-01-22', status: 'OPEN' },
+  { soNumber: '0010001006', customer: 'C-20005', customerName: 'Siemens AG', materialNumber: 'MAT-TRF-002', quantity: 2000, unit: 'PC', requestedDate: '2025-01-10', status: 'URGENT' },
+  { soNumber: '0010001007', customer: 'C-20006', customerName: 'LG Electronics', materialNumber: 'MAT-CAP-002', quantity: 30000, unit: 'PC', requestedDate: '2025-01-14', status: 'OPEN' },
 ];
 
 // SAP-style Movement History (MSEG table)
 const movementHistory = [
-  { documentNumber: '5000001001', movementType: '101', materialNumber: 'TDK-CAP-001', quantity: 25000, postingDate: '2024-12-20', plant: '1000', storageLocation: 'WH01', description: 'GR from PO' },
-  { documentNumber: '5000001002', movementType: '261', materialNumber: 'TDK-CAP-001', quantity: -15000, postingDate: '2024-12-21', plant: '1000', storageLocation: 'WH01', description: 'Issue to Production' },
-  { documentNumber: '5000001003', movementType: '601', materialNumber: 'TDK-CAP-001', quantity: -20000, postingDate: '2024-12-22', plant: '1000', storageLocation: 'WH01', description: 'Goods Issue - Delivery' },
-  { documentNumber: '5000001004', movementType: '101', materialNumber: 'TDK-IND-001', quantity: 10000, postingDate: '2024-12-22', plant: '1000', storageLocation: 'WH02', description: 'GR from PO' },
-  { documentNumber: '5000001005', movementType: '301', materialNumber: 'TDK-SEN-001', quantity: 2000, postingDate: '2024-12-23', plant: '1000', storageLocation: 'WH04', description: 'Transfer Posting' },
+  { documentNumber: '5000001001', movementType: '101', materialNumber: 'MAT-CAP-001', quantity: 25000, postingDate: '2024-12-20', plant: '1000', storageLocation: 'WH01', description: 'GR from PO' },
+  { documentNumber: '5000001002', movementType: '261', materialNumber: 'MAT-CAP-001', quantity: -15000, postingDate: '2024-12-21', plant: '1000', storageLocation: 'WH01', description: 'Issue to Production' },
+  { documentNumber: '5000001003', movementType: '601', materialNumber: 'MAT-CAP-001', quantity: -20000, postingDate: '2024-12-22', plant: '1000', storageLocation: 'WH01', description: 'Goods Issue - Delivery' },
+  { documentNumber: '5000001004', movementType: '101', materialNumber: 'MAT-IND-001', quantity: 10000, postingDate: '2024-12-22', plant: '1000', storageLocation: 'WH02', description: 'GR from PO' },
+  { documentNumber: '5000001005', movementType: '301', materialNumber: 'MAT-SEN-001', quantity: 2000, postingDate: '2024-12-23', plant: '1000', storageLocation: 'WH04', description: 'Transfer Posting' },
 ];
 
 // SAP Plant/Warehouse Configuration
 const plants = [
-  { plant: '1000', name: 'TDK Philippines Main Plant', address: 'Laguna Technopark, Philippines', country: 'PH' },
-  { plant: '2000', name: 'TDK Philippines Plant 2', address: 'Cavite Export Zone, Philippines', country: 'PH' },
+  { plant: '1000', name: 'Company A Main Plant', address: 'Laguna Technopark, Philippines', country: 'PH' },
+  { plant: '2000', name: 'Company A Plant 2', address: 'Cavite Export Zone, Philippines', country: 'PH' },
 ];
 
 const storageLocations = [
@@ -494,3 +494,4 @@ router.post('/simulate/reset', (req, res) => {
 });
 
 module.exports = router;
+
