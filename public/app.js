@@ -101,18 +101,66 @@ class InventoryApp {
     formatAnalysis(text) {
         if (!text) return '<p class="text-muted">No analysis available</p>';
         
-        return text
+        // First, handle tables properly
+        let formatted = text;
+        
+        // Split by lines to process tables
+        const lines = formatted.split('\n');
+        let inTable = false;
+        let tableRows = [];
+        let result = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // Check if line is a table row
+            if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+                // Check if it's a separator line
+                if (line.includes('---')) {
+                    continue; // Skip separator lines
+                }
+                
+                if (!inTable) {
+                    inTable = true;
+                    tableRows = [];
+                }
+                
+                // Parse table row
+                const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
+                const isHeader = i === 0 || (tableRows.length === 0 && (
+                    cells.some(c => c.includes('Material') || c.includes('Metric') || c.includes('Priority') || 
+                                   c.includes('Day') || c.includes('Risk') || c.includes('Category'))
+                ));
+                const tag = isHeader ? 'th' : 'td';
+                tableRows.push(`<tr>${cells.map(c => `<${tag} class="px-2 py-1">${c}</${tag}>`).join('')}</tr>`);
+            } else {
+                // Not a table line
+                if (inTable) {
+                    // End of table, output it
+                    result.push('<div class="table-responsive"><table class="table table-sm table-bordered mb-3">');
+                    result.push(tableRows.join('\n'));
+                    result.push('</table></div>');
+                    tableRows = [];
+                    inTable = false;
+                }
+                result.push(line);
+            }
+        }
+        
+        // If still in table at end
+        if (inTable && tableRows.length > 0) {
+            result.push('<div class="table-responsive"><table class="table table-sm table-bordered mb-3">');
+            result.push(tableRows.join('\n'));
+            result.push('</table></div>');
+        }
+        
+        formatted = result.join('\n');
+        
+        // Now apply other formatting
+        return formatted
             .replace(/## (.*)/g, '<h4 class="analysis-header mt-4 mb-3">$1</h4>')
             .replace(/### (.*)/g, '<h5 class="analysis-subheader mt-3 mb-2">$1</h5>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\|(.+)\|/g, (match) => {
-                const cells = match.split('|').filter(c => c.trim());
-                if (cells.some(c => c.includes('---'))) return '';
-                const isHeader = match.includes('Metric') || match.includes('Material') || match.includes('Priority') || match.includes('Category') || match.includes('Day') || match.includes('Risk');
-                const tag = isHeader ? 'th' : 'td';
-                return `<tr>${cells.map(c => `<${tag} class="px-2 py-1">${c.trim()}</${tag}>`).join('')}</tr>`;
-            })
-            .replace(/(<tr>.*<\/tr>\n?)+/g, '<div class="table-responsive"><table class="table table-sm table-bordered mb-3">$&</table></div>')
             .replace(/⚠️/g, '<span class="text-warning">⚠️</span>')
             .replace(/✅/g, '<span class="text-success">✅</span>')
             .replace(/🔴/g, '<span class="text-danger">🔴</span>')
