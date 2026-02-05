@@ -46,7 +46,7 @@ class InventoryApp {
         }
 
         try {
-            const response = await fetch('/api/ai-analysis');
+            const response = await fetch('/api/ai/dashboard-analysis');
             const result = await response.json();
             
             if (statusBadge) {
