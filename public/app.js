@@ -508,3 +508,191 @@ class InventoryApp {
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new InventoryApp();
 });
+
+    // ============================================
+    // CSV IMPORT FUNCTIONS
+    // ============================================
+    showImportModal() {
+        const modal = new bootstrap.Modal(document.getElementById('csvImportModal'));
+        
+        // Reset modal state
+        document.getElementById('importProgress').classList.add('d-none');
+        document.getElementById('importResults').classList.add('d-none');
+        document.getElementById('selectedFile').innerHTML = '';
+        document.getElementById('selectedFile').classList.remove('show');
+        document.getElementById('uploadBtn').disabled = true;
+        
+        // Setup drag and drop
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('csvFileInput');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('drag-over');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('drag-over');
+            });
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                this.handleFileSelect(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                this.handleFileSelect(e.target.files[0]);
+            }
+        });
+        
+        modal.show();
+    }
+    
+    handleFileSelect(file) {
+        const selectedFileDiv = document.getElementById('selectedFile');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
+        if (!file.name.endsWith('.csv')) {
+            selectedFileDiv.innerHTML = `
+                <div class="alert alert-danger mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Please select a CSV file
+                </div>
+            `;
+            selectedFileDiv.classList.add('show');
+            uploadBtn.disabled = true;
+            return;
+        }
+        
+        selectedFileDiv.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-file-csv text-success me-2"></i>
+                    <strong>${file.name}</strong>
+                    <span class="text-muted ms-2">(${(file.size / 1024).toFixed(2)} KB)</span>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" onclick="app.clearFileSelection()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        selectedFileDiv.classList.add('show');
+        uploadBtn.disabled = false;
+    }
+    
+    clearFileSelection() {
+        document.getElementById('csvFileInput').value = '';
+        document.getElementById('selectedFile').innerHTML = '';
+        document.getElementById('selectedFile').classList.remove('show');
+        document.getElementById('uploadBtn').disabled = true;
+    }
+    
+    async uploadCSV() {
+        const fileInput = document.getElementById('csvFileInput');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            this.showNotification('Please select a file', 'warning');
+            return;
+        }
+        
+        // Show progress
+        document.getElementById('importProgress').classList.remove('d-none');
+        document.getElementById('importResults').classList.add('d-none');
+        document.getElementById('uploadBtn').disabled = true;
+        
+        try {
+            const formData = new FormData();
+            formData.append('csvFile', file);
+            
+            const response = await fetch('/api/csv/import', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            // Hide progress
+            document.getElementById('importProgress').classList.add('d-none');
+            
+            if (result.success) {
+                // Show results
+                document.getElementById('importedCount').textContent = result.imported;
+                
+                // Show detected columns info
+                if (result.detectedColumns) {
+                    const detectedInfo = document.getElementById('detectedInfo');
+                    const detectedColumns = document.getElementById('detectedColumns');
+                    
+                    const mappedFields = Object.keys(result.columnMapping || {})
+                        .filter(k => k !== 'customFields' && result.columnMapping[k]);
+                    
+                    detectedColumns.innerHTML = `
+                        <span class="badge bg-success me-1">${result.detectedFields || mappedFields.length} standard fields</span>
+                        ${result.customFields && result.customFields.length > 0 ? 
+                            `<span class="badge bg-info">${result.customFields.length} custom fields</span>` : ''}
+                        <div class="mt-2 small">
+                            <strong>Detected:</strong> ${mappedFields.join(', ')}
+                            ${result.customFields && result.customFields.length > 0 ? 
+                                `<br><strong>Custom:</strong> ${result.customFields.join(', ')}` : ''}
+                        </div>
+                    `;
+                }
+                
+                if (result.errors > 0) {
+                    document.getElementById('errorCount').innerHTML = `
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        ${result.errors} errors
+                    `;
+                    
+                    // Show error details
+                    const errorTableBody = document.getElementById('errorTableBody');
+                    errorTableBody.innerHTML = result.errorDetails.map(err => `
+                        <tr>
+                            <td>${err.row}</td>
+                            <td class="text-danger">${err.error}</td>
+                        </tr>
+                    `).join('');
+                    
+                    document.getElementById('errorDetails').classList.remove('d-none');
+                } else {
+                    document.getElementById('errorCount').textContent = '';
+                    document.getElementById('errorDetails').classList.add('d-none');
+                }
+                
+                document.getElementById('importResults').classList.remove('d-none');
+                
+                // Show success notification
+                this.showNotification(result.message, 'success');
+                
+                // Reload data after 2 seconds
+                setTimeout(() => {
+                    this.loadAllData();
+                    this.loadAIDashboardAnalysis();
+                }, 2000);
+                
+            } else {
+                throw new Error(result.error || 'Import failed');
+            }
+            
+        } catch (error) {
+            console.error('CSV Import Error:', error);
+            document.getElementById('importProgress').classList.add('d-none');
+            this.showNotification('Import failed: ' + error.message, 'danger');
+            document.getElementById('uploadBtn').disabled = false;
+        }
+    }

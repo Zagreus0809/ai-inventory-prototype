@@ -242,6 +242,9 @@
                             </select>
                         </div>
                         <div class="col-md-3 text-end">
+                            <button class="btn btn-sm btn-success me-1" onclick="app.showImportModal()" title="Import CSV">
+                                <i class="fas fa-file-upload me-1"></i>Import CSV
+                            </button>
                             <button class="btn btn-sm btn-outline-secondary me-1" onclick="app.refreshData()" title="Refresh Data">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
@@ -454,6 +457,136 @@
                         <strong><i class="fas fa-lightbulb me-2"></i>Pro Tip:</strong> 
                         Click on any material in the inventory table to see detailed AI analysis for that specific item, including supply/demand projections and recommendations.
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Import Modal -->
+    <div class="modal fade" id="csvImportModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-upload me-2"></i>Import Materials from CSV
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Smart Import:</strong> System automatically detects your CSV format and adapts to any SAP system.
+                        <a href="/api/csv/template" class="alert-link" download>
+                            <i class="fas fa-download me-1"></i>Download Template
+                        </a>
+                    </div>
+
+                    <!-- SAP System Selector -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-server me-1"></i>SAP System Type (Optional)
+                        </label>
+                        <select class="form-select" id="sapSystemType">
+                            <option value="auto">Auto-Detect from CSV</option>
+                            <option value="SAP S/4HANA">SAP S/4HANA</option>
+                            <option value="SAP ECC">SAP ECC</option>
+                            <option value="SAP Business One">SAP Business One</option>
+                            <option value="ERPNext">ERPNext</option>
+                            <option value="Odoo">Odoo</option>
+                            <option value="Custom/Generic">Custom/Generic Format</option>
+                        </select>
+                        <small class="text-muted">
+                            Select your ERP system for optimized column mapping, or use Auto-Detect
+                        </small>
+                    </div>
+
+                    <!-- File Upload Area -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select CSV File</label>
+                        <div class="drop-zone" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <p class="mb-2">Drag and drop your CSV file here</p>
+                            <p class="text-muted small mb-3">or</p>
+                            <input type="file" id="csvFileInput" accept=".csv" class="d-none">
+                            <button class="btn btn-outline-primary" onclick="document.getElementById('csvFileInput').click()">
+                                <i class="fas fa-folder-open me-2"></i>Browse Files
+                            </button>
+                        </div>
+                        <div id="selectedFile" class="mt-2"></div>
+                    </div>
+
+                    <!-- Import Progress -->
+                    <div id="importProgress" class="d-none">
+                        <div class="progress mb-2">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <p class="text-center text-muted small">Processing CSV file...</p>
+                    </div>
+
+                    <!-- Import Results -->
+                    <div id="importResults" class="d-none">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle me-2"></i>Import Complete</h6>
+                            <p class="mb-2">
+                                <strong id="importedCount">0</strong> materials imported successfully
+                                <span id="errorCount" class="text-danger ms-2"></span>
+                            </p>
+                            <div id="detectedInfo" class="small mt-2 border-top pt-2">
+                                <strong>Detected Columns:</strong>
+                                <div id="detectedColumns" class="mt-1"></div>
+                            </div>
+                        </div>
+                        <div id="errorDetails" class="d-none">
+                            <h6 class="text-danger">Errors:</h6>
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="errorTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CSV Format Guide -->
+                    <div class="mt-3">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-magic me-1"></i>Smart Column Detection
+                        </h6>
+                        <p class="small text-muted mb-2">
+                            The system automatically recognizes columns from any SAP system or custom format. 
+                            It supports multiple naming conventions for each field.
+                        </p>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <strong class="small">Required Columns (any format):</strong>
+                                <ul class="small mb-0">
+                                    <li>Material Number / Item Code / SKU</li>
+                                    <li>Description / Name / Item Name</li>
+                                    <li>Current Stock / Quantity / On Hand</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <strong class="small">Supported SAP Systems:</strong>
+                                <ul class="small mb-0">
+                                    <li>SAP S/4HANA, SAP ECC, SAP B1</li>
+                                    <li>ERPNext, Odoo, Custom ERP</li>
+                                    <li>Any CSV with standard fields</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="uploadBtn" onclick="app.uploadCSV()" disabled>
+                        <i class="fas fa-upload me-2"></i>Upload & Import
+                    </button>
                 </div>
             </div>
         </div>

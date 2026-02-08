@@ -1,0 +1,6 @@
+item_code,item_name,item_group,warehouse,actual_qty,safety_stock,stock_uom
+MAT-CAP-001,MLCC Capacitor 10uF 50V,Capacitors,Main Warehouse,15000,5000,Nos
+MAT-CAP-002,Aluminum Electrolytic 100uF,Capacitors,Main Warehouse,8500,3000,Nos
+MAT-SEN-001,Temperature Sensor DS18B20,Sensors,Electronics Warehouse,3500,2000,Nos
+MAT-IND-001,Power Inductor 100uH,Inductors,Main Warehouse,12000,8000,Nos
+MAT-FER-001,Ferrite Bead 600R,Ferrites,Main Warehouse,22000,15000,Nos

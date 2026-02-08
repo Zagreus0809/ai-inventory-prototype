@@ -10,6 +10,7 @@ const inventoryRoutes = require('./routes/inventory');
 const aiRoutes = require('./routes/ai');
 const weatherRoutes = require('./routes/weather');
 const sapRoutes = require('./routes/sap-mock');
+const csvImportRoutes = require('./routes/csv-import');
 const RealTimeMonitor = require('./services/realtime-monitor');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/sap', sapRoutes);
+app.use('/api/csv', csvImportRoutes);
 
 // Serve main page
 app.get('/', (req, res) => {
