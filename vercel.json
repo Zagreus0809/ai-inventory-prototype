@@ -1,20 +1,19 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/sap-stock", "destination": "/api/sap-stock.js" },
-    { "source": "/api/sap-mrp", "destination": "/api/sap-mrp.js" },
-    { "source": "/api/sap-orders", "destination": "/api/sap-orders.js" },
-    { "source": "/api/weather", "destination": "/api/weather.js" },
-    { "source": "/api/ai-analysis", "destination": "/api/ai-analysis.js" },
-    { "source": "/(.*)", "destination": "/public/$1" }
-  ],
-  "functions": {
-    "api/*.js": {
-      "memory": 1024,
-      "maxDuration": 10
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
   "env": {
+    "VERCEL": "1",
     "GEMINI_API_KEY": "@gemini_api_key"
   }
 }
