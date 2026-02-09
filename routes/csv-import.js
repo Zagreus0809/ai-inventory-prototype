@@ -7,8 +7,16 @@ const columnMappings = require('../config/column-mappings');
 const router = express.Router();
 
 // Configure multer for file upload
+// Use /tmp for Vercel serverless, uploads/ for local
+const uploadDir = process.env.VERCEL ? '/tmp' : 'uploads';
+
+// Ensure upload directory exists (only for local)
+if (!process.env.VERCEL && !fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const upload = multer({ 
-  dest: 'uploads/',
+  dest: uploadDir,
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'text/csv' || file.originalname.endsWith('.csv')) {
       cb(null, true);

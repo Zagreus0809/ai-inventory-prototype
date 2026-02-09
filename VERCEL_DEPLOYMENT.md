@@ -89,16 +89,19 @@ vercel --prod
 ## Features Available on Vercel
 
 ✅ **Working:**
-- AI Dashboard Analysis
+- AI Dashboard Analysis (with Gemini AI)
 - Stock Overview
-- MRP Analysis
+- MRP Analysis  
 - Weather Integration
 - Real-time Alerts
 - Material Details
+- All viewing and analysis features
 
-⚠️ **Limited:**
-- CSV Import (works locally only)
-- WebSocket real-time updates (works locally only)
+❌ **Not Available (Serverless Limitations):**
+- CSV Import (requires file system - use local development)
+- WebSocket real-time updates (use local development)
+
+**Note:** CSV Import button is automatically hidden on Vercel deployment.
 
 ## Local Development
 

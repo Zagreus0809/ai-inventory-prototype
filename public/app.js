@@ -10,6 +10,15 @@ class InventoryApp {
 
     async init() {
         this.updateConnectionStatus('connected', 'Online');
+        
+        // Hide CSV import on Vercel (serverless doesn't support file uploads)
+        if (window.location.hostname.includes('vercel.app')) {
+            const importBtn = document.getElementById('importCsvBtn');
+            if (importBtn) {
+                importBtn.style.display = 'none';
+            }
+        }
+        
         await this.loadAllData();
         await this.loadAIDashboardAnalysis();
         this.setupEventListeners();
@@ -518,6 +527,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // CSV IMPORT FUNCTIONS
     // ============================================
     showImportModal() {
+        // Check if running on Vercel
+        if (window.location.hostname.includes('vercel.app')) {
+            this.showNotification(
+                'CSV Import is only available in local development. Download the project and run locally for full features.',
+                'info',
+                8000
+            );
+            return;
+        }
+        
         const modal = new bootstrap.Modal(document.getElementById('csvImportModal'));
         
         // Reset modal state
