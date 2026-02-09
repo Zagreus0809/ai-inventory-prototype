@@ -10,15 +10,6 @@ class InventoryApp {
 
     async init() {
         this.updateConnectionStatus('connected', 'Online');
-        
-        // Hide CSV import on Vercel (serverless doesn't support file uploads)
-        if (window.location.hostname.includes('vercel.app')) {
-            const importBtn = document.getElementById('importCsvBtn');
-            if (importBtn) {
-                importBtn.style.display = 'none';
-            }
-        }
-        
         await this.loadAllData();
         await this.loadAIDashboardAnalysis();
         this.setupEventListeners();

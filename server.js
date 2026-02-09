@@ -12,12 +12,6 @@ const weatherRoutes = require('./routes/weather');
 const sapRoutes = require('./routes/sap-mock');
 const RealTimeMonitor = require('./services/realtime-monitor');
 
-// Only load CSV import in non-Vercel environments (requires file system)
-let csvImportRoutes = null;
-if (!process.env.VERCEL) {
-  csvImportRoutes = require('./routes/csv-import');
-}
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -39,11 +33,6 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/sap', sapRoutes);
-
-// CSV import only available locally (not on Vercel)
-if (csvImportRoutes) {
-  app.use('/api/csv', csvImportRoutes);
-}
 
 // Serve main page
 app.get('/', (req, res) => {
