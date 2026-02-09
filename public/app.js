@@ -46,7 +46,12 @@ class InventoryApp {
         }
 
         try {
-            const response = await fetch('/api/ai/dashboard-analysis');
+            // Use different endpoint for Vercel vs local
+            const endpoint = window.location.hostname.includes('vercel.app') 
+                ? '/api/ai-analysis'  // Vercel serverless function
+                : '/api/ai/dashboard-analysis';  // Local Express route
+            
+            const response = await fetch(endpoint);
             const result = await response.json();
             
             if (statusBadge) {

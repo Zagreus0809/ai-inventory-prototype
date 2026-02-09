@@ -1,18 +1,20 @@
-// Vercel Serverless Function - MRP Analysis
-const calculateMRP = require('./data/sap-data').calculateMRP;
+// Vercel Serverless Function - SAP MRP Analysis
+const { calculateMRP } = require('./data/sap-data');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
+
   try {
     const mrpData = calculateMRP();
     
+    // Calculate summary statistics
     const summary = {
       totalMaterials: mrpData.length,
       criticalRisk: mrpData.filter(m => m.riskLevel === 'CRITICAL').length,
@@ -22,10 +24,28 @@ export default async function handler(req, res) {
       weatherSensitiveCount: mrpData.filter(m => m.weatherSensitive).length
     };
 
-    const criticalItems = mrpData.filter(m => m.riskLevel === 'CRITICAL' || m.riskLevel === 'HIGH');
+    // Get critical items
+    const criticalItems = mrpData
+      .filter(m => m.riskLevel === 'CRITICAL' || m.riskLevel === 'HIGH')
+      .sort((a, b) => {
+        const riskOrder = { 'CRITICAL': 0, 'HIGH': 1 };
+        return riskOrder[a.riskLevel] - riskOrder[b.riskLevel];
+      });
 
-    return res.status(200).json({ data: mrpData, summary, criticalItems });
+    res.json({
+      success: true,
+      data: mrpData,
+      summary,
+      criticalItems,
+      timestamp: new Date().toISOString()
+    });
+
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('MRP Analysis Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to calculate MRP analysis',
+      details: error.message
+    });
   }
-}
+};
